@@ -21,7 +21,10 @@ class MyCarsViewController: UIViewController {
         imageVew.contentMode = .scaleAspectFit
         return imageVew
     }()
-    var segmentedControl = UISegmentedControl()
+    var segmentedControl: UISegmentedControl = {
+        let segment = UISegmentedControl(items: ["Lamborgini", "Ferrari", "Mercedes", "Nissan", "BMW"])
+        return segment
+    }()
     let modelLabel = UILabel()
     let raitingLabel = UILabel()
     let numberOfTripsLabel = UILabel()
@@ -57,27 +60,36 @@ class MyCarsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setView()
-        //deleteCarsInfo()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
         let fetchRequest = Car.fetchRequest()
         do {
             cars = try context.fetch(fetchRequest)
-            setDefaultValue()
-            insertDataFrom(selectedCar: cars[1])
+            insertDataFrom(selectedCar: cars[0])
         } catch let error as NSError {
             print(error.localizedDescription)
         }
+        
+        //deleteCarsInfo()
+        setView()
+        getDataFromFile()
+        
+        
+        
     }
     
     private func setView() {
         
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentTintColor = .systemYellow
+        segmentedControl.addTarget(self, action: #selector(showCar(segmentedControl:)), for: .valueChanged)
+        numberOfTripsLabel.font = .systemFont(ofSize: 20)
+        modelLabel.font = UIFont.boldSystemFont(ofSize: 30)
+        raitingLabel.font = UIFont.systemFont(ofSize: 20)
+        lastTimeStartedLabel.font = .systemFont(ofSize: 20)
         
         view.addSubview(carsImageView)
         view.addSubview(myChoiceImageView)
@@ -134,38 +146,11 @@ class MyCarsViewController: UIViewController {
         }
     }
     
-    private func setDefaultValue() {
-        title = "111"
-        carsImageView.image = UIImage(named: "bmwX6")
-        var marks = [String]()
-        for car in cars {
-            guard let mark = car.mark else { return }
-            marks.append(mark)
-        }
-        segmentedControl = UISegmentedControl(items: marks)
-        segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.selectedSegmentTintColor = .systemGray3
-        
-        numberOfTripsLabel.text = "numberOfTrips"
-        numberOfTripsLabel.font = .systemFont(ofSize: 20)
-        
-        modelLabel.font = UIFont.boldSystemFont(ofSize: 30)
-        modelLabel.text = "model"
-        
-        raitingLabel.text = "raiting"
-        raitingLabel.font = UIFont.systemFont(ofSize: 20)
-        
-        lastTimeStartedLabel.font = .systemFont(ofSize: 20)
-        lastTimeStartedLabel.text = "lastTimeStarted"
-        
-    }
-    
     private func getDataFromFile() {
         print(cars)
         guard cars.isEmpty else { return }
         guard let pathToFile = Bundle.main.path(forResource: "data", ofType: "plist"),
               let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
-        
         
         for dictionary in dataArray {
             
@@ -178,13 +163,12 @@ class MyCarsViewController: UIViewController {
             car.rating = carDictionary["rating"] as! Double
             car.lastStarted = carDictionary["lastStarted"] as? Date
             car.timesDriven = carDictionary["timesDriven"] as! Int16
-            car.myChoice = carDictionary["myChoice"] as! Int16
+            car.myChoice = carDictionary["myChoice"] as! Bool
             
             let imageName = carDictionary["imageName"] as! String
             let image = UIImage(named: imageName)
             let imageData = image?.pngData()
             car.imageData = imageData
-            
             
             if let colorDictionary = carDictionary["tintColor"] as? [String : Float] {
                 car.tintColor = getColor(colorDictionary: colorDictionary)
@@ -203,7 +187,7 @@ class MyCarsViewController: UIViewController {
         guard let red = colorDictionary["red"],
               let green = colorDictionary["green"],
               let blue = colorDictionary["blue"] else { return UIColor() }
-        let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1.0)
+        let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1)
         return color
     }
     
@@ -218,6 +202,12 @@ class MyCarsViewController: UIViewController {
     
     @objc func rateItPressed() {
         
+    }
+    
+    @objc func showCar(segmentedControl: UISegmentedControl) {
+        guard segmentedControl == self.segmentedControl else { return }
+        let segmentIndex = segmentedControl.selectedSegmentIndex
+        insertDataFrom(selectedCar: cars[segmentIndex])
     }
 }
 
@@ -236,10 +226,11 @@ extension MyCarsViewController {
         carsImageView.image = UIImage(data: car.imageData!)
         title = car.mark
         modelLabel.text = car.model
-        //myChoiceImageView.isHidden = !(car.myChoice)
+        myChoiceImageView.isHidden = !(car.myChoice)
         raitingLabel.text = "Рейтинг: \(car.rating) / 10"
         numberOfTripsLabel.text = "Kоличество поездок: \(car.timesDriven)"
-        lastTimeStartedLabel.text = "Последнее время поездки: \(dateFormatter.string(from: car.lastStarted!))"
-        segmentedControl.tintColor = car.tintColor as? UIColor
+        lastTimeStartedLabel.text = "Bремя поездки: \(dateFormatter.string(from: car.lastStarted!))"
+        segmentedControl.selectedSegmentTintColor = car.tintColor as? UIColor
     }
 }
+
