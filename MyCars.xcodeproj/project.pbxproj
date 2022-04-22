@@ -7,25 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57F066FBD71762337CFECA58 /* Pods_MyCars.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */; };
 		FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */; };
 		FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */; };
-		FAD5B8822810A45800F7CF86 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8812810A45800F7CF86 /* ViewController.swift */; };
+		FAD5B8822810A45800F7CF86 /* MyCarsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */; };
 		FAD5B8852810A45800F7CF86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8832810A45800F7CF86 /* Main.storyboard */; };
 		FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8862810A45800F7CF86 /* MyCars.xcdatamodeld */; };
 		FAD5B88A2810A45A00F7CF86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8892810A45A00F7CF86 /* Assets.xcassets */; };
 		FAD5B88D2810A45A00F7CF86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */; };
+		FAD5B8952810A91A00F7CF86 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8942810A91A00F7CF86 /* data.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4A340AA654C353FC14E5BE15 /* Pods-MyCars.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCars.release.xcconfig"; path = "Target Support Files/Pods-MyCars/Pods-MyCars.release.xcconfig"; sourceTree = "<group>"; };
+		BC747760F03916283613EBCB /* Pods-MyCars.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCars.debug.xcconfig"; path = "Target Support Files/Pods-MyCars/Pods-MyCars.debug.xcconfig"; sourceTree = "<group>"; };
+		C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyCars.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5B87A2810A45800F7CF86 /* MyCars.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCars.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FAD5B8812810A45800F7CF86 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCarsViewController.swift; sourceTree = "<group>"; };
 		FAD5B8842810A45800F7CF86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FAD5B8872810A45800F7CF86 /* MyCars.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyCars.xcdatamodel; sourceTree = "<group>"; };
 		FAD5B8892810A45A00F7CF86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAD5B88C2810A45A00F7CF86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5B88E2810A45A00F7CF86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAD5B8942810A91A00F7CF86 /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = data.plist; path = ../../data.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +39,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57F066FBD71762337CFECA58 /* Pods_MyCars.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3CD683DA82AFF2628BBEB016 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ACFF1081227B933FEEF5CEC0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BC747760F03916283613EBCB /* Pods-MyCars.debug.xcconfig */,
+				4A340AA654C353FC14E5BE15 /* Pods-MyCars.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		FAD5B8712810A45800F7CF86 = {
 			isa = PBXGroup;
 			children = (
 				FAD5B87C2810A45800F7CF86 /* MyCars */,
 				FAD5B87B2810A45800F7CF86 /* Products */,
+				ACFF1081227B933FEEF5CEC0 /* Pods */,
+				3CD683DA82AFF2628BBEB016 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,11 +86,12 @@
 			children = (
 				FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */,
 				FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */,
-				FAD5B8812810A45800F7CF86 /* ViewController.swift */,
+				FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */,
 				FAD5B8832810A45800F7CF86 /* Main.storyboard */,
 				FAD5B8892810A45A00F7CF86 /* Assets.xcassets */,
 				FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */,
 				FAD5B88E2810A45A00F7CF86 /* Info.plist */,
+				FAD5B8942810A91A00F7CF86 /* data.plist */,
 				FAD5B8862810A45800F7CF86 /* MyCars.xcdatamodeld */,
 			);
 			path = MyCars;
@@ -77,9 +104,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5B8912810A45A00F7CF86 /* Build configuration list for PBXNativeTarget "MyCars" */;
 			buildPhases = (
+				6C034D2884794DCAADFA58D9 /* [CP] Check Pods Manifest.lock */,
 				FAD5B8762810A45800F7CF86 /* Sources */,
 				FAD5B8772810A45800F7CF86 /* Frameworks */,
 				FAD5B8782810A45800F7CF86 /* Resources */,
+				A49CD7F7485383CB76140A57 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -130,18 +159,61 @@
 			files = (
 				FAD5B88D2810A45A00F7CF86 /* LaunchScreen.storyboard in Resources */,
 				FAD5B88A2810A45A00F7CF86 /* Assets.xcassets in Resources */,
+				FAD5B8952810A91A00F7CF86 /* data.plist in Resources */,
 				FAD5B8852810A45800F7CF86 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		6C034D2884794DCAADFA58D9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MyCars-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A49CD7F7485383CB76140A57 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MyCars/Pods-MyCars-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MyCars/Pods-MyCars-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MyCars/Pods-MyCars-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		FAD5B8762810A45800F7CF86 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAD5B8822810A45800F7CF86 /* ViewController.swift in Sources */,
+				FAD5B8822810A45800F7CF86 /* MyCarsViewController.swift in Sources */,
 				FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */,
 				FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */,
 				FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */,
@@ -286,6 +358,7 @@
 		};
 		FAD5B8922810A45A00F7CF86 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC747760F03916283613EBCB /* Pods-MyCars.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -314,6 +387,7 @@
 		};
 		FAD5B8932810A45A00F7CF86 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A340AA654C353FC14E5BE15 /* Pods-MyCars.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
