@@ -21,14 +21,18 @@ class MyCarsViewController: UIViewController {
         imageVew.contentMode = .scaleAspectFit
         return imageVew
     }()
-    let segmentedControl: UISegmentedControl = {
-        let segment = UISegmentedControl(items: ["1","2","3"])
-        return segment
-    }()
+    var segmentedControl = UISegmentedControl()
     let modelLabel = UILabel()
     let raitingLabel = UILabel()
     let numberOfTripsLabel = UILabel()
     let lastTimeStartedLabel = UILabel()
+    
+    lazy var dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateStyle = .short
+        df.timeStyle = .none
+        return df
+    }()
     
     let startEngineButton: UIButton = {
         let button = UIButton(type: .system)
@@ -49,20 +53,32 @@ class MyCarsViewController: UIViewController {
         return button
     }()
     var context: NSManagedObjectContext!
-    var cars = [Car]()
+    var cars: [Car] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setView()
-        getDataFromFile()
+        //deleteCarsInfo()
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let fetchRequest = Car.fetchRequest()
+        do {
+            cars = try context.fetch(fetchRequest)
+            setDefaultValue()
+            insertDataFrom(selectedCar: cars[1])
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+    }
+    
     private func setView() {
         
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = true
-
+        
         view.addSubview(carsImageView)
         view.addSubview(myChoiceImageView)
         view.addSubview(segmentedControl)
@@ -74,9 +90,7 @@ class MyCarsViewController: UIViewController {
         view.addSubview(rateButton)
         
         makeConstraints()
-        setDefaultValue()
         setButton()
-        getDataFromFile()
     }
     
     private func makeConstraints() {
@@ -123,13 +137,18 @@ class MyCarsViewController: UIViewController {
     private func setDefaultValue() {
         title = "111"
         carsImageView.image = UIImage(named: "bmwX6")
-        
+        var marks = [String]()
+        for car in cars {
+            guard let mark = car.mark else { return }
+            marks.append(mark)
+        }
+        segmentedControl = UISegmentedControl(items: marks)
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemGray3
         
         numberOfTripsLabel.text = "numberOfTrips"
         numberOfTripsLabel.font = .systemFont(ofSize: 20)
-
+        
         modelLabel.font = UIFont.boldSystemFont(ofSize: 30)
         modelLabel.text = "model"
         
@@ -142,39 +161,48 @@ class MyCarsViewController: UIViewController {
     }
     
     private func getDataFromFile() {
+        print(cars)
+        guard cars.isEmpty else { return }
         guard let pathToFile = Bundle.main.path(forResource: "data", ofType: "plist"),
               let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
+        
+        
         for dictionary in dataArray {
             
-            guard let entity =  NSEntityDescription.entity(forEntityName: "Cars", in: context) else { return }
-                let car = Car(entity: entity, insertInto: context)
-                
-                let carDictionary = dictionary as! [String : AnyObject]
-                car.mark = carDictionary["mark"] as? String
-                car.model = carDictionary["model"] as? String
-                car.rating = carDictionary["rating"] as! Double
-                car.lastStarted = carDictionary["lastStarted"] as? Date
-                car.timesDriven = carDictionary["timesDriven"] as! Int16
-                car.myChoice = carDictionary["myChoice"] as! Int16
-                
-                let imageName = carDictionary["imageName"] as! String
-                let image = UIImage(named: imageName)
-                let imageData = image?.pngData()
-                car.imageData = imageData
-                
-                
-                if let colorDictionary = carDictionary["tintColor"] as? [String : Float] {
-                    car.tintColor = getColor(colorDictionary: colorDictionary)
-                }
-                cars.append(car)
-
+            guard let entity =  NSEntityDescription.entity(forEntityName: "Car", in: context) else { return }
+            let car = Car(entity: entity, insertInto: context)
+            
+            let carDictionary = dictionary as! [String : AnyObject]
+            car.mark = carDictionary["mark"] as? String
+            car.model = carDictionary["model"] as? String
+            car.rating = carDictionary["rating"] as! Double
+            car.lastStarted = carDictionary["lastStarted"] as? Date
+            car.timesDriven = carDictionary["timesDriven"] as! Int16
+            car.myChoice = carDictionary["myChoice"] as! Int16
+            
+            let imageName = carDictionary["imageName"] as! String
+            let image = UIImage(named: imageName)
+            let imageData = image?.pngData()
+            car.imageData = imageData
+            
+            
+            if let colorDictionary = carDictionary["tintColor"] as? [String : Float] {
+                car.tintColor = getColor(colorDictionary: colorDictionary)
+            }
+            cars.append(car)
+            print(cars)
+            do {
+                try context.save()
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
         }
     }
     
     private func getColor(colorDictionary: [String : Float]) -> UIColor {
         guard let red = colorDictionary["red"],
-                 let green = colorDictionary["green"],
-                 let blue = colorDictionary["blue"] else { return UIColor() }
+              let green = colorDictionary["green"],
+              let blue = colorDictionary["blue"] else { return UIColor() }
         let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1.0)
         return color
     }
@@ -195,4 +223,23 @@ class MyCarsViewController: UIViewController {
 
 extension MyCarsViewController {
     
+    private func deleteCarsInfo() {
+        let fetchRequest = Car.fetchRequest()
+        guard let cars = try? context.fetch(fetchRequest) else { return }
+        for car in cars {
+            context.delete(car)
+        }
+        guard ((try? context.save()) != nil) else { return }
+    }
+    
+    private func insertDataFrom(selectedCar car: Car) {
+        carsImageView.image = UIImage(data: car.imageData!)
+        title = car.mark
+        modelLabel.text = car.model
+        //myChoiceImageView.isHidden = !(car.myChoice)
+        raitingLabel.text = "Рейтинг: \(car.rating) / 10"
+        numberOfTripsLabel.text = "Kоличество поездок: \(car.timesDriven)"
+        lastTimeStartedLabel.text = "Последнее время поездки: \(dateFormatter.string(from: car.lastStarted!))"
+        segmentedControl.tintColor = car.tintColor as? UIColor
+    }
 }
