@@ -64,14 +64,18 @@ class MyCarsViewController: UIViewController {
         let fetchRequest = Car.fetchRequest()
         do {
             cars = try context.fetch(fetchRequest)
-            insertDataFrom(selectedCar: cars[0])
+            if cars.isEmpty {
+                getDataFromFile()
+            } else {
+                insertDataFrom(selectedCar: cars[0])
+            }
         } catch let error as NSError {
             print(error.localizedDescription)
         }
         
         //deleteCarsInfo()
         setView()
-        getDataFromFile()
+        
         
         
         
@@ -180,6 +184,7 @@ class MyCarsViewController: UIViewController {
             } catch let error as NSError {
                 print(error.localizedDescription)
             }
+            insertDataFrom(selectedCar: cars.first!)
         }
     }
     
