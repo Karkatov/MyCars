@@ -30,13 +30,19 @@ class MyCarsViewController: UIViewController {
     let numberOfTripsLabel = UILabel()
     let lastTimeStartedLabel = UILabel()
     
-    lazy var dateFormatter: DateFormatter = {
+    lazy var shortDateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateStyle = .short
         df.timeStyle = .none
         return df
     }()
     
+    lazy var mediumDateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+        df.timeStyle = .short
+        return df
+    }()
     let startEngineButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Start engine", for: .normal)
@@ -56,6 +62,7 @@ class MyCarsViewController: UIViewController {
         return button
     }()
     var context: NSManagedObjectContext!
+    var car = Car()
     var cars: [Car] = []
     var timeUse: [Time] = []
     var tableView = UITableView()
@@ -64,19 +71,9 @@ class MyCarsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let fetchRequest = Car.fetchRequest()
-        do {
-            cars = try context.fetch(fetchRequest)
-            if cars.isEmpty {
-                getDataFromFile()
-            } else {
-                insertDataFrom(selectedCar: cars[0])
-            }
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
+        fetchRequest()
         
-        //deleteCarsInfo()
+       // deleteCarsInfo()
         setTableView()
         setView()
         
@@ -87,6 +84,8 @@ class MyCarsViewController: UIViewController {
         super.viewWillAppear(true)
         
         let fetchRequest = Time.fetchRequest()
+        let sort = NSSortDescriptor(key: "timeUse", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
         do {
             timeUse = try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -97,8 +96,6 @@ class MyCarsViewController: UIViewController {
     private func setView() {
         
         view.backgroundColor = .white
-       // navigationController?.navigationBar.prefersLargeTitles = true
-        
         
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemYellow
@@ -166,6 +163,22 @@ class MyCarsViewController: UIViewController {
             make.right.equalTo(-20)
             make.top.equalTo(segmentedControl.snp.bottom)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(40)
+        }
+    }
+    
+    
+    private func fetchRequest() {
+        let fetchRequest = Car.fetchRequest()
+        do {
+            cars = try context.fetch(fetchRequest)
+            car = cars.first ?? Car()
+            if cars.isEmpty {
+                getDataFromFile()
+            } else {
+                insertDataFrom(selectedCar: car)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
         }
     }
     
@@ -242,7 +255,7 @@ class MyCarsViewController: UIViewController {
         myChoiceImageView.isHidden = !(car.myChoice)
         raitingLabel.text = "Рейтинг: \(car.rating) / 10"
         numberOfTripsLabel.text = "Kоличество поездок: \(car.timesDriven)"
-        lastTimeStartedLabel.text = "Bремя поездки: \(dateFormatter.string(from: car.lastStarted!))"
+        lastTimeStartedLabel.text = "Дата поездки: \(shortDateFormatter.string(from: car.lastStarted!))"
         segmentedControl.selectedSegmentTintColor = car.tintColor as? UIColor
     }
     
@@ -258,10 +271,19 @@ class MyCarsViewController: UIViewController {
     }
     
     @objc func startEnginePressed() {
-        let formatter = dateFormatter
-        formatter.timeStyle = .medium
-        let currentlyTime = formatter.string(from: Date())
+        let currentlyTime = mediumDateFormatter.string(from: Date())
         saveTimeUse(time: currentlyTime, car: title!)
+        
+        let segmentIndex = segmentedControl.selectedSegmentIndex
+        car = cars[segmentIndex]
+        car.timesDriven += 1
+        car.lastStarted = Date()
+        insertDataFrom(selectedCar: car)
+        
+        guard ((try? context.save()) != nil) else { return }
+        
+        let indexPath = IndexPath(row: 0, section: 0)
+        tableView.insertRows(at: [indexPath], with: .fade)
     }
     
     @objc func rateItPressed() {
@@ -275,7 +297,6 @@ class MyCarsViewController: UIViewController {
         object.car = car
         guard ((try? context.save()) != nil) else { return }
         timeUse.insert(object, at: 0)
-        tableView.reloadData()
     }
 }
 
