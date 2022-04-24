@@ -22,7 +22,7 @@ class MyCarsViewController: UIViewController {
         return imageVew
     }()
     var segmentedControl: UISegmentedControl = {
-        let segment = UISegmentedControl(items: ["Lamborgini", "Ferrari", "Mercedes", "Nissan", "BMW"])
+        let segment = UISegmentedControl(items: ["Lamborgini", "Ferrari", "BMW", "Mercedes", "Nissan"])
         return segment
     }()
     let modelLabel = UILabel()
@@ -57,6 +57,9 @@ class MyCarsViewController: UIViewController {
     }()
     var context: NSManagedObjectContext!
     var cars: [Car] = []
+    var timeUse: [Time] = []
+    var tableView = UITableView()
+    var identifier = "Cell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,17 +77,27 @@ class MyCarsViewController: UIViewController {
         }
         
         //deleteCarsInfo()
+        setTableView()
         setView()
         
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         
-        
+        let fetchRequest = Time.fetchRequest()
+        do {
+            timeUse = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
     
     private func setView() {
         
         view.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = true
+       // navigationController?.navigationBar.prefersLargeTitles = true
         
         
         segmentedControl.selectedSegmentIndex = 0
@@ -148,6 +161,12 @@ class MyCarsViewController: UIViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.right.equalTo(-20)
         }
+        tableView.snp.makeConstraints { make in
+            make.left.equalTo(20)
+            make.right.equalTo(-20)
+            make.top.equalTo(segmentedControl.snp.bottom)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(40)
+        }
     }
     
     private func getDataFromFile() {
@@ -201,22 +220,11 @@ class MyCarsViewController: UIViewController {
         rateButton.addTarget(self, action: #selector(rateItPressed), for: .touchUpInside)
     }
     
-    @objc func startEnginePressed() {
-        
-    }
-    
-    @objc func rateItPressed() {
-        
-    }
-    
     @objc func showCar(segmentedControl: UISegmentedControl) {
         guard segmentedControl == self.segmentedControl else { return }
         let segmentIndex = segmentedControl.selectedSegmentIndex
         insertDataFrom(selectedCar: cars[segmentIndex])
     }
-}
-
-extension MyCarsViewController {
     
     private func deleteCarsInfo() {
         let fetchRequest = Car.fetchRequest()
@@ -237,5 +245,51 @@ extension MyCarsViewController {
         lastTimeStartedLabel.text = "Bремя поездки: \(dateFormatter.string(from: car.lastStarted!))"
         segmentedControl.selectedSegmentTintColor = car.tintColor as? UIColor
     }
+    
+    private func setTableView() {
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        tableView.delegate = self
+        tableView.dataSource = self
+        view.addSubview(tableView)
+    }
+    
+    private func getTimeInfo() {
+        
+    }
+    
+    @objc func startEnginePressed() {
+        let formatter = dateFormatter
+        formatter.timeStyle = .medium
+        let currentlyTime = formatter.string(from: Date())
+        saveTimeUse(time: currentlyTime, car: title!)
+    }
+    
+    @objc func rateItPressed() {
+        
+    }
+    
+    private func saveTimeUse(time: String, car: String) {
+        guard let entity = NSEntityDescription.entity(forEntityName: "Time", in: context) else { return }
+        let object = Time(entity: entity, insertInto: context)
+        object.timeUse = time
+        object.car = car
+        guard ((try? context.save()) != nil) else { return }
+        timeUse.insert(object, at: 0)
+        tableView.reloadData()
+    }
 }
 
+extension MyCarsViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return timeUse.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: identifier)
+        guard !timeUse.isEmpty else { return cell }
+        let time = timeUse[indexPath.row]
+        cell.textLabel?.text = time.car
+        cell.detailTextLabel?.text = time.timeUse
+        return cell
+    }
+}
