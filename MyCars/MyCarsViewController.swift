@@ -45,20 +45,21 @@ class MyCarsViewController: UIViewController {
     }()
     let startEngineButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Start engine", for: .normal)
+        button.setTitle("Начать поездку", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.cornerRadius = 7
         button.backgroundColor = .systemBlue
         button.tintColor = .white
         return button
     }()
-    let rateButton: UIButton = {
+    let clearButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Rate", for: .normal)
+        button.setTitle("Отчистить", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.layer.cornerRadius = 7
         button.backgroundColor = .systemBlue
         button.tintColor = .white
+        button.isEnabled = false
         return button
     }()
     var context: NSManagedObjectContext!
@@ -72,12 +73,9 @@ class MyCarsViewController: UIViewController {
         super.viewDidLoad()
         
         fetchRequest()
-        
-       // deleteCarsInfo()
+       //deleteTimeInfo()
         setTableView()
         setView()
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -90,6 +88,12 @@ class MyCarsViewController: UIViewController {
             timeUse = try context.fetch(fetchRequest)
         } catch let error as NSError {
             print(error.localizedDescription)
+        }
+        
+        if timeUse.isEmpty {
+            clearButton.isEnabled = false
+        } else {
+            clearButton.isEnabled = true
         }
     }
     
@@ -113,7 +117,7 @@ class MyCarsViewController: UIViewController {
         view.addSubview(numberOfTripsLabel)
         view.addSubview(lastTimeStartedLabel)
         view.addSubview(startEngineButton)
-        view.addSubview(rateButton)
+        view.addSubview(clearButton)
         
         makeConstraints()
         setButton()
@@ -149,19 +153,19 @@ class MyCarsViewController: UIViewController {
             make.right.equalTo(-20)
         }
         startEngineButton.snp.makeConstraints { make in
-            make.width.equalTo(120)
+            make.width.equalTo(135)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.left.equalTo(20)
         }
-        rateButton.snp.makeConstraints { make in
-            make.width.equalTo(120)
+        clearButton.snp.makeConstraints { make in
+            make.width.equalTo(135)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.right.equalTo(-20)
         }
         tableView.snp.makeConstraints { make in
-            make.left.equalTo(20)
-            make.right.equalTo(-20)
-            make.top.equalTo(segmentedControl.snp.bottom)
+            make.left.equalTo(0)
+            make.right.equalTo(0)
+            make.top.equalTo(segmentedControl.snp.bottom).inset(-20)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(40)
         }
     }
@@ -230,7 +234,7 @@ class MyCarsViewController: UIViewController {
     
     private func setButton() {
         startEngineButton.addTarget(self, action: #selector(startEnginePressed), for: .touchUpInside)
-        rateButton.addTarget(self, action: #selector(rateItPressed), for: .touchUpInside)
+        clearButton.addTarget(self, action: #selector(clearPressed), for: .touchUpInside)
     }
     
     @objc func showCar(segmentedControl: UISegmentedControl) {
@@ -239,13 +243,22 @@ class MyCarsViewController: UIViewController {
         insertDataFrom(selectedCar: cars[segmentIndex])
     }
     
-    private func deleteCarsInfo() {
-        let fetchRequest = Car.fetchRequest()
-        guard let cars = try? context.fetch(fetchRequest) else { return }
-        for car in cars {
-            context.delete(car)
+    private func deleteInfo() {
+        let fetchRequest = Time.fetchRequest()
+        guard let times = try? context.fetch(fetchRequest) else { return }
+        for time in times {
+            context.delete(time)
         }
+        
+        let fetchRequestCar = Car.fetchRequest()
+        guard let cars = try? context.fetch(fetchRequestCar) else { return }
+        for car in cars {
+            car.timesDriven = 0
+        }
+        
         guard ((try? context.save()) != nil) else { return }
+        clearButton.isEnabled = false
+        tableView.reloadData()
     }
     
     private func insertDataFrom(selectedCar car: Car) {
@@ -284,10 +297,12 @@ class MyCarsViewController: UIViewController {
         
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .fade)
+        clearButton.isEnabled = true
     }
     
-    @objc func rateItPressed() {
-        
+    @objc func clearPressed() {
+        deleteInfo()
+        insertDataFrom(selectedCar: car)
     }
     
     private func saveTimeUse(time: String, car: String) {
