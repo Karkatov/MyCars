@@ -293,6 +293,13 @@ class MyCarsViewController: UIViewController {
         car.lastStarted = Date()
         insertDataFrom(selectedCar: car)
         
+        let timeout = Time(context: context)
+        timeout.timeUse = mediumDateFormatter.string(from: Date())
+        timeout.car = "Diablo"
+        
+        let times = car.times?.mutableCopy() as? NSMutableOrderedSet
+        times?.add(timeout)
+        
         guard ((try? context.save()) != nil) else { return }
         
         let indexPath = IndexPath(row: 0, section: 0)
