@@ -104,10 +104,10 @@ class MyCarsViewController: UIViewController {
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemYellow
         segmentedControl.addTarget(self, action: #selector(showCar(segmentedControl:)), for: .valueChanged)
-        numberOfTripsLabel.font = .systemFont(ofSize: 20)
+        numberOfTripsLabel.font = .systemFont(ofSize: 18)
         modelLabel.font = UIFont.boldSystemFont(ofSize: 30)
-        raitingLabel.font = UIFont.systemFont(ofSize: 20)
-        lastTimeStartedLabel.font = .systemFont(ofSize: 20)
+        raitingLabel.font = UIFont.systemFont(ofSize: 18)
+        lastTimeStartedLabel.font = .systemFont(ofSize: 18)
         
         view.addSubview(carsImageView)
         view.addSubview(myChoiceImageView)
@@ -293,12 +293,9 @@ class MyCarsViewController: UIViewController {
         car.lastStarted = Date()
         insertDataFrom(selectedCar: car)
         
-        let timeout = Time(context: context)
-        timeout.timeUse = mediumDateFormatter.string(from: Date())
-        timeout.car = "Diablo"
         
         let times = car.times?.mutableCopy() as? NSMutableOrderedSet
-        times?.add(timeout)
+
         
         guard ((try? context.save()) != nil) else { return }
         

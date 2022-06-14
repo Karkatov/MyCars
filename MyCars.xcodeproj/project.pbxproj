@@ -15,7 +15,7 @@
 		FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8862810A45800F7CF86 /* MyCars.xcdatamodeld */; };
 		FAD5B88A2810A45A00F7CF86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8892810A45A00F7CF86 /* Assets.xcassets */; };
 		FAD5B88D2810A45A00F7CF86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */; };
-		FAD5B8952810A91A00F7CF86 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8942810A91A00F7CF86 /* data.plist */; };
+		FAF0C3C7285810E80060AF19 /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAF0C3C6285810E80060AF19 /* data.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +31,7 @@
 		FAD5B8892810A45A00F7CF86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAD5B88C2810A45A00F7CF86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5B88E2810A45A00F7CF86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FAD5B8942810A91A00F7CF86 /* data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = data.plist; path = ../../data.plist; sourceTree = "<group>"; };
+		FAF0C3C6285810E80060AF19 /* data.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,8 +91,8 @@
 				FAD5B8892810A45A00F7CF86 /* Assets.xcassets */,
 				FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */,
 				FAD5B88E2810A45A00F7CF86 /* Info.plist */,
-				FAD5B8942810A91A00F7CF86 /* data.plist */,
 				FAD5B8862810A45800F7CF86 /* MyCars.xcdatamodeld */,
+				FAF0C3C6285810E80060AF19 /* data.plist */,
 			);
 			path = MyCars;
 			sourceTree = "<group>";
@@ -159,7 +159,7 @@
 			files = (
 				FAD5B88D2810A45A00F7CF86 /* LaunchScreen.storyboard in Resources */,
 				FAD5B88A2810A45A00F7CF86 /* Assets.xcassets in Resources */,
-				FAD5B8952810A91A00F7CF86 /* data.plist in Resources */,
+				FAF0C3C7285810E80060AF19 /* data.plist in Resources */,
 				FAD5B8852810A45800F7CF86 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
