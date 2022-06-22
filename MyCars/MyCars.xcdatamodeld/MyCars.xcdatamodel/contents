@@ -10,15 +10,15 @@
         <attribute name="rating" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="timesDriven" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="tintColor" optional="YES" attributeType="Transformable"/>
-        <relationship name="times" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Time" inverseName="cars" inverseEntity="Time"/>
+        <relationship name="times" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Trip" inverseName="cars" inverseEntity="Trip"/>
     </entity>
-    <entity name="Time" representedClassName="Time" syncable="YES" codeGenerationType="class">
+    <entity name="Trip" representedClassName="Trip" syncable="YES" codeGenerationType="class">
         <attribute name="car" optional="YES" attributeType="String"/>
         <attribute name="timeUse" optional="YES" attributeType="String"/>
         <relationship name="cars" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Car" inverseName="times" inverseEntity="Car"/>
     </entity>
     <elements>
         <element name="Car" positionX="-3619.05859375" positionY="-3727.734375" width="121.2421875" height="179"/>
-        <element name="Time" positionX="-3937.86328125" positionY="-3623.328125" width="128" height="74"/>
+        <element name="Trip" positionX="-3937.86328125" positionY="-3623.328125" width="128" height="74"/>
     </elements>
 </model>

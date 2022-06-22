@@ -1,9 +1,4 @@
-//
-//  ViewController.swift
-//  MyCars
-//
-//  Created by Duxxless on 20.04.2022.
-//
+
 
 import UIKit
 import CoreData
@@ -11,6 +6,16 @@ import SnapKit
 
 class MyCarsViewController: UIViewController {
     
+    let modelLabel = UILabel()
+    let raitingLabel = UILabel()
+    let numberOfTripsLabel = UILabel()
+    let lastTimeStartedLabel = UILabel()
+    var context: NSManagedObjectContext!
+    var car = Car()
+    var cars: [Car] = []
+    var timeUse: [Trip] = []
+    var tableView = UITableView()
+    var identifier = "Cell"
     let carsImageView: UIImageView = {
         let imageVew = UIImageView()
         imageVew.contentMode = .scaleAspectFit
@@ -25,20 +30,16 @@ class MyCarsViewController: UIViewController {
         let segment = UISegmentedControl(items: ["Lamborgini", "Ferrari", "BMW", "Mercedes", "Nissan"])
         return segment
     }()
-    let modelLabel = UILabel()
-    let raitingLabel = UILabel()
-    let numberOfTripsLabel = UILabel()
-    let lastTimeStartedLabel = UILabel()
-    
     lazy var shortDateFormatter: DateFormatter = {
         let df = DateFormatter()
+        df.locale = Locale(identifier: "ru_RU")
         df.dateStyle = .short
         df.timeStyle = .none
         return df
     }()
-    
     lazy var mediumDateFormatter: DateFormatter = {
         let df = DateFormatter()
+        df.locale = Locale(identifier: "ru_RU")
         df.dateStyle = .medium
         df.timeStyle = .short
         return df
@@ -62,18 +63,19 @@ class MyCarsViewController: UIViewController {
         button.isEnabled = false
         return button
     }()
-    var context: NSManagedObjectContext!
-    var car = Car()
-    var cars: [Car] = []
-    var timeUse: [Time] = []
-    var tableView = UITableView()
-    var identifier = "Cell"
+    let setRateButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Оценка", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.layer.cornerRadius = 7
+        button.backgroundColor = .systemYellow
+        button.tintColor = .white
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         fetchRequest()
-       //deleteTimeInfo()
         setTableView()
         setView()
     }
@@ -81,7 +83,7 @@ class MyCarsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        let fetchRequest = Time.fetchRequest()
+        let fetchRequest = Trip.fetchRequest()
         let sort = NSSortDescriptor(key: "timeUse", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         do {
@@ -89,7 +91,6 @@ class MyCarsViewController: UIViewController {
         } catch let error as NSError {
             print(error.localizedDescription)
         }
-        
         if timeUse.isEmpty {
             clearButton.isEnabled = false
         } else {
@@ -98,9 +99,7 @@ class MyCarsViewController: UIViewController {
     }
     
     private func setView() {
-        
         view.backgroundColor = .white
-        
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemYellow
         segmentedControl.addTarget(self, action: #selector(showCar(segmentedControl:)), for: .valueChanged)
@@ -108,7 +107,11 @@ class MyCarsViewController: UIViewController {
         modelLabel.font = UIFont.boldSystemFont(ofSize: 30)
         raitingLabel.font = UIFont.systemFont(ofSize: 18)
         lastTimeStartedLabel.font = .systemFont(ofSize: 18)
-        
+        makeConstraints()
+        setButton()
+    }
+    
+    private func makeConstraints() {
         view.addSubview(carsImageView)
         view.addSubview(myChoiceImageView)
         view.addSubview(segmentedControl)
@@ -118,12 +121,7 @@ class MyCarsViewController: UIViewController {
         view.addSubview(lastTimeStartedLabel)
         view.addSubview(startEngineButton)
         view.addSubview(clearButton)
-        
-        makeConstraints()
-        setButton()
-    }
-    
-    private func makeConstraints() {
+        view.addSubview(setRateButton)
         
         carsImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(20)
@@ -162,6 +160,12 @@ class MyCarsViewController: UIViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.right.equalTo(-20)
         }
+        setRateButton.snp.makeConstraints { make in
+            make.top.equalTo(raitingLabel).inset(30)
+            make.right.equalTo(raitingLabel)
+            make.width.equalTo(110)
+            make.height.equalTo(30)
+        }
         tableView.snp.makeConstraints { make in
             make.left.equalTo(0)
             make.right.equalTo(0)
@@ -169,7 +173,6 @@ class MyCarsViewController: UIViewController {
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(40)
         }
     }
-    
     
     private func fetchRequest() {
         let fetchRequest = Car.fetchRequest()
@@ -187,13 +190,11 @@ class MyCarsViewController: UIViewController {
     }
     
     private func getDataFromFile() {
-        print(cars)
         guard cars.isEmpty else { return }
         guard let pathToFile = Bundle.main.path(forResource: "data", ofType: "plist"),
               let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
         
         for dictionary in dataArray {
-            
             guard let entity =  NSEntityDescription.entity(forEntityName: "Car", in: context) else { return }
             let car = Car(entity: entity, insertInto: context)
             
@@ -214,7 +215,6 @@ class MyCarsViewController: UIViewController {
                 car.tintColor = getColor(colorDictionary: colorDictionary)
             }
             cars.append(car)
-            print(cars)
             do {
                 try context.save()
             } catch let error as NSError {
@@ -235,6 +235,7 @@ class MyCarsViewController: UIViewController {
     private func setButton() {
         startEngineButton.addTarget(self, action: #selector(startEnginePressed), for: .touchUpInside)
         clearButton.addTarget(self, action: #selector(clearPressed), for: .touchUpInside)
+        setRateButton.addTarget(self, action: #selector(setRate), for: .touchUpInside)
     }
     
     @objc func showCar(segmentedControl: UISegmentedControl) {
@@ -244,16 +245,17 @@ class MyCarsViewController: UIViewController {
     }
     
     private func deleteInfo() {
-        let fetchRequest = Time.fetchRequest()
-        guard let times = try? context.fetch(fetchRequest) else { return }
-        for time in times {
-            context.delete(time)
+        let fetchRequest = Trip.fetchRequest()
+        guard let trips = try? context.fetch(fetchRequest) else { return }
+        for trip in trips {
+            context.delete(trip)
         }
         
         let fetchRequestCar = Car.fetchRequest()
         guard let cars = try? context.fetch(fetchRequestCar) else { return }
         for car in cars {
             car.timesDriven = 0
+            car.rating = 0
         }
         
         guard ((try? context.save()) != nil) else { return }
@@ -261,12 +263,25 @@ class MyCarsViewController: UIViewController {
         tableView.reloadData()
     }
     
+    @objc func setRate() {
+        let segmentIndex = segmentedControl.selectedSegmentIndex
+        car = cars[segmentIndex]
+        if car.rating == 5 {
+            car.rating = 0
+        } else {
+            car.rating += 1
+        }
+        insertDataFrom(selectedCar: car)
+        
+        guard ((try? context.save()) != nil) else { return }
+    }
+    
     private func insertDataFrom(selectedCar car: Car) {
         carsImageView.image = UIImage(data: car.imageData!)
         title = car.mark
         modelLabel.text = car.model
         myChoiceImageView.isHidden = !(car.myChoice)
-        raitingLabel.text = "Рейтинг: \(car.rating) / 10"
+        raitingLabel.text = "Рейтинг: \(Int(car.rating)) / 5"
         numberOfTripsLabel.text = "Kоличество поездок: \(car.timesDriven)"
         lastTimeStartedLabel.text = "Дата поездки: \(shortDateFormatter.string(from: car.lastStarted!))"
         segmentedControl.selectedSegmentTintColor = car.tintColor as? UIColor
@@ -279,11 +294,8 @@ class MyCarsViewController: UIViewController {
         view.addSubview(tableView)
     }
     
-    private func getTimeInfo() {
-        
-    }
-    
     @objc func startEnginePressed() {
+       
         let currentlyTime = mediumDateFormatter.string(from: Date())
         saveTimeUse(time: currentlyTime, car: title!)
         
@@ -292,10 +304,6 @@ class MyCarsViewController: UIViewController {
         car.timesDriven += 1
         car.lastStarted = Date()
         insertDataFrom(selectedCar: car)
-        
-        
-        let times = car.times?.mutableCopy() as? NSMutableOrderedSet
-
         
         guard ((try? context.save()) != nil) else { return }
         
@@ -310,8 +318,7 @@ class MyCarsViewController: UIViewController {
     }
     
     private func saveTimeUse(time: String, car: String) {
-        guard let entity = NSEntityDescription.entity(forEntityName: "Time", in: context) else { return }
-        let object = Time(entity: entity, insertInto: context)
+        let object = Trip(context: context)
         object.timeUse = time
         object.car = car
         guard ((try? context.save()) != nil) else { return }
