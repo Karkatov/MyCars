@@ -4,18 +4,19 @@ import UIKit
 import CoreData
 import SnapKit
 
-class MyCarsViewController: UIViewController {
+class CarsViewController: UIViewController {
     
     let modelLabel = UILabel()
     let raitingLabel = UILabel()
     let numberOfTripsLabel = UILabel()
     let lastTimeStartedLabel = UILabel()
-    var context: NSManagedObjectContext!
     var car = Car()
     var cars: [Car] = []
-    var timeUse: [Trip] = []
+    var trips = [Trip]()
     var tableView = UITableView()
     var identifier = "Cell"
+    var context: NSManagedObjectContext!
+    var segmentIndex = 0
     let carsImageView: UIImageView = {
         let imageVew = UIImageView()
         imageVew.contentMode = .scaleAspectFit
@@ -77,28 +78,23 @@ class MyCarsViewController: UIViewController {
         super.viewDidLoad()
         fetchRequest()
         setTableView()
-        setView()
+        configure()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        let fetchRequest = Trip.fetchRequest()
-        let sort = NSSortDescriptor(key: "timeUse", ascending: false)
-        fetchRequest.sortDescriptors = [sort]
-        do {
-            timeUse = try context.fetch(fetchRequest)
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        if timeUse.isEmpty {
-            clearButton.isEnabled = false
-        } else {
-            clearButton.isEnabled = true
+        StorageManager.shared.fetchRequestTrips { optionalTrips in
+            if let newTrips = optionalTrips, !newTrips.isEmpty {
+                trips = newTrips
+                clearButton.isEnabled = true
+            } else {
+                clearButton.isEnabled = false
+            }
         }
     }
     
-    private func setView() {
+    private func configure() {
         view.backgroundColor = .white
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemYellow
@@ -175,17 +171,13 @@ class MyCarsViewController: UIViewController {
     }
     
     private func fetchRequest() {
-        let fetchRequest = Car.fetchRequest()
-        do {
-            cars = try context.fetch(fetchRequest)
-            car = cars.first ?? Car()
-            if cars.isEmpty {
-                getDataFromFile()
+        StorageManager.shared.fetchRequestCar { fetchCars in
+            if let fetchCars = fetchCars, !fetchCars.isEmpty {
+                cars = fetchCars
+                insertDataFrom(selectedCar: cars.first!)
             } else {
-                insertDataFrom(selectedCar: car)
+                getDataFromFile()
             }
-        } catch let error as NSError {
-            print(error.localizedDescription)
         }
     }
     
@@ -195,10 +187,8 @@ class MyCarsViewController: UIViewController {
               let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
         
         for dictionary in dataArray {
-            guard let entity =  NSEntityDescription.entity(forEntityName: "Car", in: context) else { return }
-            let car = Car(entity: entity, insertInto: context)
-            
-            let carDictionary = dictionary as! [String : AnyObject]
+            let car = Car(context: context)
+            let carDictionary = dictionary as! [String : Any]
             car.mark = carDictionary["mark"] as? String
             car.model = carDictionary["model"] as? String
             car.rating = carDictionary["rating"] as! Double
@@ -215,11 +205,7 @@ class MyCarsViewController: UIViewController {
                 car.tintColor = getColor(colorDictionary: colorDictionary)
             }
             cars.append(car)
-            do {
-                try context.save()
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
+            StorageManager.shared.saveContex()
             insertDataFrom(selectedCar: cars.first!)
         }
     }
@@ -240,40 +226,21 @@ class MyCarsViewController: UIViewController {
     
     @objc func showCar(segmentedControl: UISegmentedControl) {
         guard segmentedControl == self.segmentedControl else { return }
-        let segmentIndex = segmentedControl.selectedSegmentIndex
+        segmentIndex = segmentedControl.selectedSegmentIndex
         insertDataFrom(selectedCar: cars[segmentIndex])
     }
     
     private func deleteInfo() {
-        let fetchRequest = Trip.fetchRequest()
-        guard let trips = try? context.fetch(fetchRequest) else { return }
-        for trip in trips {
-            context.delete(trip)
-        }
-        
-        let fetchRequestCar = Car.fetchRequest()
-        guard let cars = try? context.fetch(fetchRequestCar) else { return }
-        for car in cars {
-            car.timesDriven = 0
-            car.rating = 0
-        }
-        
-        guard ((try? context.save()) != nil) else { return }
+        StorageManager.shared.deleteInfo()
+        segmentedControl.selectedSegmentIndex = 0
         clearButton.isEnabled = false
         tableView.reloadData()
     }
     
     @objc func setRate() {
-        let segmentIndex = segmentedControl.selectedSegmentIndex
-        car = cars[segmentIndex]
-        if car.rating == 5 {
-            car.rating = 0
-        } else {
-            car.rating += 1
-        }
-        insertDataFrom(selectedCar: car)
-        
-        guard ((try? context.save()) != nil) else { return }
+        segmentIndex = segmentedControl.selectedSegmentIndex
+        StorageManager.shared.saveRate(cars[segmentIndex])
+        insertDataFrom(selectedCar: cars[segmentIndex])
     }
     
     private func insertDataFrom(selectedCar car: Car) {
@@ -295,18 +262,13 @@ class MyCarsViewController: UIViewController {
     }
     
     @objc func startEnginePressed() {
-       
         let currentlyTime = mediumDateFormatter.string(from: Date())
-        saveTimeUse(time: currentlyTime, car: title!)
-        
-        let segmentIndex = segmentedControl.selectedSegmentIndex
-        car = cars[segmentIndex]
-        car.timesDriven += 1
-        car.lastStarted = Date()
-        insertDataFrom(selectedCar: car)
-        
-        guard ((try? context.save()) != nil) else { return }
-        
+        StorageManager.shared.saveDetailOfTrip(currentlyTime, car: title!) { trip in
+            trips.insert(trip, at: 0)
+        }
+        segmentIndex = segmentedControl.selectedSegmentIndex
+        StorageManager.shared.newTrip(cars[segmentIndex])
+        insertDataFrom(selectedCar: cars[segmentIndex])
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .fade)
         clearButton.isEnabled = true
@@ -314,27 +276,19 @@ class MyCarsViewController: UIViewController {
     
     @objc func clearPressed() {
         deleteInfo()
-        insertDataFrom(selectedCar: car)
-    }
-    
-    private func saveTimeUse(time: String, car: String) {
-        let object = Trip(context: context)
-        object.timeUse = time
-        object.car = car
-        guard ((try? context.save()) != nil) else { return }
-        timeUse.insert(object, at: 0)
+        insertDataFrom(selectedCar: cars.first!)
     }
 }
 
-extension MyCarsViewController: UITableViewDelegate, UITableViewDataSource {
+extension CarsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return timeUse.count
+        return trips.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: identifier)
-        guard !timeUse.isEmpty else { return cell }
-        let time = timeUse[indexPath.row]
+        guard !trips.isEmpty else { return cell }
+        let time = trips[indexPath.row]
         cell.textLabel?.text = time.car
         cell.detailTextLabel?.text = time.timeUse
         return cell

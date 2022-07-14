@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		57F066FBD71762337CFECA58 /* Pods_MyCars.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */; };
+		FAAC38C6288073EA0058B3AA /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAC38C5288073EA0058B3AA /* StorageManager.swift */; };
 		FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */; };
 		FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */; };
-		FAD5B8822810A45800F7CF86 /* MyCarsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */; };
+		FAD5B8822810A45800F7CF86 /* CarsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8812810A45800F7CF86 /* CarsViewController.swift */; };
 		FAD5B8852810A45800F7CF86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8832810A45800F7CF86 /* Main.storyboard */; };
 		FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8862810A45800F7CF86 /* MyCars.xcdatamodeld */; };
 		FAD5B88A2810A45A00F7CF86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5B8892810A45A00F7CF86 /* Assets.xcassets */; };
@@ -22,10 +23,11 @@
 		4A340AA654C353FC14E5BE15 /* Pods-MyCars.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCars.release.xcconfig"; path = "Target Support Files/Pods-MyCars/Pods-MyCars.release.xcconfig"; sourceTree = "<group>"; };
 		BC747760F03916283613EBCB /* Pods-MyCars.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCars.debug.xcconfig"; path = "Target Support Files/Pods-MyCars/Pods-MyCars.debug.xcconfig"; sourceTree = "<group>"; };
 		C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyCars.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAAC38C5288073EA0058B3AA /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		FAD5B87A2810A45800F7CF86 /* MyCars.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCars.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCarsViewController.swift; sourceTree = "<group>"; };
+		FAD5B8812810A45800F7CF86 /* CarsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarsViewController.swift; sourceTree = "<group>"; };
 		FAD5B8842810A45800F7CF86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FAD5B8872810A45800F7CF86 /* MyCars.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyCars.xcdatamodel; sourceTree = "<group>"; };
 		FAD5B8892810A45A00F7CF86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -86,7 +88,8 @@
 			children = (
 				FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */,
 				FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */,
-				FAD5B8812810A45800F7CF86 /* MyCarsViewController.swift */,
+				FAD5B8812810A45800F7CF86 /* CarsViewController.swift */,
+				FAAC38C5288073EA0058B3AA /* StorageManager.swift */,
 				FAD5B8832810A45800F7CF86 /* Main.storyboard */,
 				FAD5B8892810A45A00F7CF86 /* Assets.xcassets */,
 				FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */,
@@ -213,8 +216,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAD5B8822810A45800F7CF86 /* MyCarsViewController.swift in Sources */,
+				FAD5B8822810A45800F7CF86 /* CarsViewController.swift in Sources */,
 				FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */,
+				FAAC38C6288073EA0058B3AA /* StorageManager.swift in Sources */,
 				FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */,
 				FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */,
 			);
