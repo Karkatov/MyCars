@@ -93,7 +93,27 @@ class CarsViewController: UIViewController {
             }
         }
     }
+}
+
+// MARK: - Metods UITableViewDelegate, UITableViewDataSource
+
+extension CarsViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return trips.count
+    }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: identifier)
+        guard !trips.isEmpty else { return cell }
+        let time = trips[indexPath.row]
+        cell.textLabel?.text = time.car
+        cell.detailTextLabel?.text = time.timeUse
+        return cell
+    }
+}
+
+// MARK: - Metods
+extension CarsViewController {
     private func configure() {
         view.backgroundColor = .white
         segmentedControl.selectedSegmentIndex = 0
@@ -176,46 +196,12 @@ class CarsViewController: UIViewController {
                 cars = fetchCars
                 insertDataFrom(selectedCar: cars.first!)
             } else {
-                getDataFromFile()
+                StorageManager.shared.getDataFromFile { carsFromFile in
+                    cars = carsFromFile
+                    insertDataFrom(selectedCar: cars.first!)
+                }
             }
         }
-    }
-    
-    private func getDataFromFile() {
-        guard cars.isEmpty else { return }
-        guard let pathToFile = Bundle.main.path(forResource: "data", ofType: "plist"),
-              let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
-        
-        for dictionary in dataArray {
-            let car = Car(context: context)
-            let carDictionary = dictionary as! [String : Any]
-            car.mark = carDictionary["mark"] as? String
-            car.model = carDictionary["model"] as? String
-            car.rating = carDictionary["rating"] as! Double
-            car.lastStarted = carDictionary["lastStarted"] as? Date
-            car.timesDriven = carDictionary["timesDriven"] as! Int16
-            car.myChoice = carDictionary["myChoice"] as! Bool
-            
-            let imageName = carDictionary["imageName"] as! String
-            let image = UIImage(named: imageName)
-            let imageData = image?.pngData()
-            car.imageData = imageData
-            
-            if let colorDictionary = carDictionary["tintColor"] as? [String : Float] {
-                car.tintColor = getColor(colorDictionary: colorDictionary)
-            }
-            cars.append(car)
-            StorageManager.shared.saveContex()
-            insertDataFrom(selectedCar: cars.first!)
-        }
-    }
-    
-    private func getColor(colorDictionary: [String : Float]) -> UIColor {
-        guard let red = colorDictionary["red"],
-              let green = colorDictionary["green"],
-              let blue = colorDictionary["blue"] else { return UIColor() }
-        let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1)
-        return color
     }
     
     private func setButton() {
@@ -280,17 +266,3 @@ class CarsViewController: UIViewController {
     }
 }
 
-extension CarsViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return trips.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .value1, reuseIdentifier: identifier)
-        guard !trips.isEmpty else { return cell }
-        let time = trips[indexPath.row]
-        cell.textLabel?.text = time.car
-        cell.detailTextLabel?.text = time.timeUse
-        return cell
-    }
-}

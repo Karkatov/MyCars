@@ -76,4 +76,34 @@ class StorageManager {
     func saveContex() {
         guard ((try? context.save()) != nil) else { return }
     }
+    
+    func getDataFromFile(complition: ([Car]) -> Void) {
+        var cars = [Car]()
+        guard let pathToFile = Bundle.main.path(forResource: "data", ofType: "plist"),
+              let dataArray = NSArray(contentsOfFile: pathToFile) else { return }
+        
+        for dictionary in dataArray {
+            let car = Car(context: context)
+            let carDictionary = dictionary as! [String : Any]
+            car.mark = carDictionary["mark"] as? String
+            car.model = carDictionary["model"] as? String
+            car.rating = carDictionary["rating"] as! Double
+            car.lastStarted = carDictionary["lastStarted"] as? Date
+            car.timesDriven = carDictionary["timesDriven"] as! Int16
+            car.myChoice = carDictionary["myChoice"] as! Bool
+            
+            let imageName = carDictionary["imageName"] as! String
+            let image = UIImage(named: imageName)
+            let imageData = image?.pngData()
+            car.imageData = imageData
+            
+            if let colorDictionary = carDictionary["tintColor"] as? [String : Float] {
+                car.tintColor = UIColor.getColor(colorDictionary: colorDictionary)
+            }
+            cars.append(car)
+            StorageManager.shared.saveContex()
+            complition(cars)
+        }
+    }
+    
 }

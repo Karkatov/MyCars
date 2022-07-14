@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		57F066FBD71762337CFECA58 /* Pods_MyCars.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */; };
 		FAAC38C6288073EA0058B3AA /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAC38C5288073EA0058B3AA /* StorageManager.swift */; };
+		FAAC38C8288094600058B3AA /* ExtensionCollor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAC38C7288094600058B3AA /* ExtensionCollor.swift */; };
 		FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */; };
 		FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */; };
 		FAD5B8822810A45800F7CF86 /* CarsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5B8812810A45800F7CF86 /* CarsViewController.swift */; };
@@ -24,6 +25,7 @@
 		BC747760F03916283613EBCB /* Pods-MyCars.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyCars.debug.xcconfig"; path = "Target Support Files/Pods-MyCars/Pods-MyCars.debug.xcconfig"; sourceTree = "<group>"; };
 		C366BD20110779D2C9B739C3 /* Pods_MyCars.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyCars.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAAC38C5288073EA0058B3AA /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		FAAC38C7288094600058B3AA /* ExtensionCollor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionCollor.swift; sourceTree = "<group>"; };
 		FAD5B87A2810A45800F7CF86 /* MyCars.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCars.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5B87D2810A45800F7CF86 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				FAD5B87F2810A45800F7CF86 /* SceneDelegate.swift */,
 				FAD5B8812810A45800F7CF86 /* CarsViewController.swift */,
 				FAAC38C5288073EA0058B3AA /* StorageManager.swift */,
+				FAAC38C7288094600058B3AA /* ExtensionCollor.swift */,
 				FAD5B8832810A45800F7CF86 /* Main.storyboard */,
 				FAD5B8892810A45A00F7CF86 /* Assets.xcassets */,
 				FAD5B88B2810A45A00F7CF86 /* LaunchScreen.storyboard */,
@@ -218,6 +221,7 @@
 			files = (
 				FAD5B8822810A45800F7CF86 /* CarsViewController.swift in Sources */,
 				FAD5B87E2810A45800F7CF86 /* AppDelegate.swift in Sources */,
+				FAAC38C8288094600058B3AA /* ExtensionCollor.swift in Sources */,
 				FAAC38C6288073EA0058B3AA /* StorageManager.swift in Sources */,
 				FAD5B8882810A45800F7CF86 /* MyCars.xcdatamodeld in Sources */,
 				FAD5B8802810A45800F7CF86 /* SceneDelegate.swift in Sources */,
